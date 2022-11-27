@@ -166,7 +166,7 @@ public class MyBatisTest {
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 
         // 2、获取sqlSession对象，用来执行sql
-        SqlSession sqlSession = sqlSessionFactory.openSession();
+        SqlSession sqlSession = sqlSessionFactory.openSession(true);
 
         // 3、获取UserMapper接口的代理对象
         BrandMapper brandMapper = sqlSession.getMapper(BrandMapper.class);
