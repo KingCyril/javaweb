@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cyril.mapper.BrandMapper">
+    <!--
+         <select id="selectAll" resultType="Brand">
+            select * from tb_brand;
+         </select>
+    -->
+
+    <!--
+       当数据库中的字段与自定义类中的字段不一致时，生成的自定义对象中的字段会有出现null的情况
+    -->
+    <!-- 1、定义sql片段，起别名 （虽然能解决问题，但是不灵活）-->
+    <!--
+        <sql id="brand_column_map">
+            id, brand_name as brandName, company_name as companyName, ordered, description, status
+        </sql>
+        <select id="selectAll" resultType="Brand">
+            select <include refid="brand_column_map" /> from tb_brand;
+        </select>
+    -->
+    <!-- 2、resultMap -->
+    <resultMap id="brandResultMap" type="brand">
+        <!--
+            <id column="id" property="id"/> 此标签是主键字段不一致时使用的
+        -->
+        <result column="brand_name" property="brandName"/>
+        <result column="company_name" property="companyName"/>
+    </resultMap>
+    <!--  resultType 改为 resultMap   -->
+    <select id="selectAll" resultMap="brandResultMap">
+        <!--   案例一：查询全部     -->
+        select * from tb_brand;
+    </select>
+
+    <select id="selectById" parameterType="int" resultMap="brandResultMap">
+        <!--
+            ${id} 会有sql注入的问题，不使用
+            在xml中使用 > < 号：
+                1、转义: &lt; &gt;
+                2、CDATA区:
+                    <![CDATA[
+                        <
+                    ]]>
+        -->
+        <!--   案例二：通过id查询     -->
+        select * from tb_brand where id = #{id};
+    </select>
+
+    <select id="selectByCondition" resultMap="brandResultMap">
+        <!--   案例三：多条件查询     -->
+        select * from tb_brand where status = #{status} and company_name like #{companyName} and brand_name like #{brandName};
+    </select>
+
+    <select id="selectByCondition_dynamic" resultMap="brandResultMap">
+        <!--
+            案例四：动态——多条件查询(查询条件个数不固定)
+            if——where配合，如果参数有值，才加上这个条件到sql语句上
+        -->
+        select *
+        from tb_brand
+        <where>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="companyName != null and companyName != ''">
+                and company_name like #{companyName}
+            </if>
+            <if test="brandName != null and brandName != ''">
+                and brand_name like #{brandName}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByCondition_dynamic_single" resultMap="brandResultMap">
+        <!--
+            案例四：动态——单条件查询(查询条件是单个，但是不固定是查询哪个条件，比如有个单选下拉框和input输入框，用户单选某一个条件，然后再填写条件值，进行查询)
+            choose——when——otherwise配合，类似switch-case-default语句
+            如果不使用otherwise，可以使用where标签，如果值都为null，where关键词就从sql语句中删掉了
+        -->
+        select *
+        from tb_brand
+        where
+        <choose>
+            <when test="status != null">
+                status = #{status}
+            </when>
+            <when test="companyName != null and companyName != ''">
+                company_name like #{companyName}
+            </when>
+            <when test="brandName != null and brandName != ''">
+                brand_name like #{brandName}
+            </when>
+            <otherwise>
+                1 = 1
+            </otherwise>
+        </choose>
+    </select>
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        <!--
+            案例五：插入数据
+            useGeneratedKeys和keyProperty配合，实现主键返回
+            keyProperty:返回添加数据的主键，代码中即可拿到数据库中此条信息的id了
+        -->
+        insert into tb_brand(brand_name,company_name,ordered,description,status)
+        values(#{brandName},#{companyName},#{ordered},#{description},#{status})
+    </insert>
+
+    <update id="updateAll">
+        <!--  案例六，修改全部数据  -->
+        update tb_brand
+        set
+            brand_name = #{brandName},
+            company_name = #{companyName},
+            ordered = #{ordered},
+            description = #{description},
+            status = #{status}
+        where id = #{id};
+    </update>
+
+    <update id="updateSome">
+        <!--  案例七，修改动态字段数据  -->
+        update tb_brand
+        <set>
+            <if test="brandName != null and brandName != ''">
+                brand_name = #{brandName},
+            </if>
+            <if test="companyName != null and companyName != ''">
+                company_name = #{companyName},
+            </if>
+            <if test="ordered != null">
+                ordered = #{ordered},
+            </if>
+            <if test="description != null and description != ''">
+                description = #{description},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where id = #{id};
+    </update>
+
+    <delete id="deleteSingle">
+        <!--  案例八，删除单个数据  -->
+        delete from tb_brand where id = #{id}
+    </delete>
+
+    <delete id="deleteMore">
+        <!--  案例九，删除多个数据  -->
+        delete from tb_brand
+        where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
