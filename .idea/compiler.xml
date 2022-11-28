@@ -8,7 +8,11 @@
         <outputRelativeToContentRoot value="true" />
         <module name="maven-demo" />
         <module name="mybatis-demo" />
+        <module name="java-web-item" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="java-web-item2" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
