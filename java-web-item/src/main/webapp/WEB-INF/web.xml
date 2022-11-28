@@ -4,4 +4,16 @@
 
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
+
+  <!-- Servlet 全类名 -->
+  <servlet>
+    <servlet-name>user</servlet-name>
+    <servlet-class>com.cyril.web.ServletDemo3</servlet-class>
+  </servlet>
+
+  <!-- Servlet 访问路径 -->
+  <servlet-mapping>
+    <servlet-name>user</servlet-name>
+    <url-pattern>/baiducom</url-pattern>
+  </servlet-mapping>
 </web-app>
