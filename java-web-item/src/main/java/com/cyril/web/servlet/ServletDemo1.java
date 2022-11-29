@@ -1,4 +1,4 @@
-package com.cyril.web;
+package com.cyril.web.servlet;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;

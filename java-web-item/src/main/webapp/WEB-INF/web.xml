@@ -8,7 +8,7 @@
   <!-- Servlet 全类名 -->
   <servlet>
     <servlet-name>user</servlet-name>
-    <servlet-class>com.cyril.web.ServletDemo3</servlet-class>
+    <servlet-class>com.cyril.web.servlet.ServletDemo3</servlet-class>
   </servlet>
 
   <!-- Servlet 访问路径 -->
