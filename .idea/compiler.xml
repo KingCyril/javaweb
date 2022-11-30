@@ -6,12 +6,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="maven-demo" />
+        <module name="cunchutest" />
         <module name="mybatis-demo" />
         <module name="java-web-item" />
+        <module name="maven-demo" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="cunchu" target="1.8" />
       <module name="java-web-item2" target="1.8" />
     </bytecodeTargetLevel>
   </component>
